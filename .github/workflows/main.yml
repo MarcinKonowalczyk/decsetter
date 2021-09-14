@@ -34,4 +34,4 @@ jobs:
       - name: Push coverage to coveralls
         run: |
           pip install -U coveralls
-          coveralls
+          coveralls --service=github
