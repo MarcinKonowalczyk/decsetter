@@ -90,8 +90,9 @@ cwf.function_foo(1)
 ```
 
 
-## 
+## Dev
 
+Run coverage locally:
 ```
 coverage run --omit="test_*.py" -m pytest && coverage html && open htmlcov/index.html 
 ```
