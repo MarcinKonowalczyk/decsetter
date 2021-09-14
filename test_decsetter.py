@@ -1,4 +1,4 @@
-from decsetter import DecoratorProperty
+from decsetter import DecoratorProperty, decorator_property
 import pytest
 
 
@@ -50,6 +50,14 @@ class SetterKwargFalse(Common):
     @fun.setter(decorator=False)
     def fun(self, value):
         self._fun = value
+
+class SetterKwargTrueNoDecor(Common):
+    fun = Common.fun
+
+    def fset(self, value):
+        self._fun = value
+
+    fun = fun.setter(fset, decorator=True)
 
 
 class SetterAndDecor(Common):
@@ -114,9 +122,10 @@ def test_setter(cls):
             return x ** 2
 
 
-def test_setter_kwarg_true():
+@pytest.mark.parametrize("cls", (SetterKwargTrue, SetterKwargTrueNoDecor))
+def test_setter_kwarg_true(cls):
     """With decorator=true the parameter should be setable with a decorator"""
-    o = SetterKwargTrue()
+    o = cls()
 
     o.fun = lambda x: x ** 2
     assert o.fun(4) == 16
@@ -130,7 +139,7 @@ def test_setter_kwarg_true():
 
 @pytest.mark.parametrize(
     "cls",
-    (Setter, SetterKwargFalse, SetterKwargTrue),
+    (Setter, SetterKwargFalse, SetterKwargTrue, SetterKwargTrueNoDecor),
 )
 def test_setter_sideeffect(cls):
     """Setter should not have a sideeffect"""
