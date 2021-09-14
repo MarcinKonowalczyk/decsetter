@@ -1,4 +1,4 @@
-# decsetter
+# Decorator @property setter
 
 ![example workflow](https://github.com/marcinkonowalczyk/decsetter/actions/workflows/main.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/MarcinKonowalczyk/decsetter/badge.svg?branch=master)](https://coveralls.io/github/MarcinKonowalczyk/decsetter?branch=master)
 

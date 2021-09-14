@@ -26,7 +26,7 @@ jobs:
           pip install -U wheel coverage pytest black
       - name: Run tests
         run: |
-          coverage run -m pytest
+          coverage run --omit="test_*.py" -m pytest
           coverage report
       - name: Check with black
         run: |
