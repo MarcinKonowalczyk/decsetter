@@ -1,5 +1,8 @@
 # decsetter
 
+![example workflow](https://github.com/marcinkonowalczyk/decsetter/actions/workflows/main.yml/badge.svg)
+
+
 Setting `DecoratorProperty` as the metaclass adds a `@decorator_property` decorator to the body of the function. `decorator_property` behaves just like python's builtin [property](https://docs.python.org/3/library/functions.html#property), but it provides an additional interface for interacting with the property via a decorator.
 
 

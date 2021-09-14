@@ -25,6 +25,9 @@ class Common(metaclass=DecoratorProperty):
         return decor
 
 
+##### Class definitions for the tests ############
+
+
 class Setter(Common):
     fun = Common.fun
 
@@ -93,7 +96,7 @@ class JustDecor(Common):
         return Common.sideeffect_decorator(self)
 
 
-##################################################
+##### Tests ######################################
 
 
 @pytest.mark.parametrize("cls", (Setter, SetterKwargFalse))
