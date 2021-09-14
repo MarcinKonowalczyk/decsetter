@@ -11,12 +11,13 @@ class decorator_property(property):
 
     def _init_inherit(self, fget=None, fset=None, fdel=None, fdec=None, doc=None):
         """Helper to initialise self from another instance of self"""
-        fget = self.fget if not fget else fget
-        fset = self.fset if not fset else fset
-        fdel = self.fdel if not fdel else fdel
-        fdec = self.fdec if not fdec else fdec
-        doc = self.__doc__ if not doc else doc
-        return type(self)(fget, fset, fdel, fdec, doc)
+        return type(self)(
+            self.fget if not fget else fget,
+            self.fset if not fset else fset,
+            self.fdel if not fdel else fdel,
+            self.fdec if not fdec else fdec,
+            self.__doc__ if not doc else doc,
+        )
 
     @staticmethod
     def _isdecorator():
