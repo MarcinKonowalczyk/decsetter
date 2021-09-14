@@ -51,6 +51,7 @@ class SetterKwargFalse(Common):
     def fun(self, value):
         self._fun = value
 
+
 class SetterKwargTrueNoDecor(Common):
     fun = Common.fun
 
