@@ -43,9 +43,10 @@ class decorator_property(property):
                 raise AttributeError("can't decorate with attribute")
             return self.fdec(obj)
         else:
-            if self.fget is None:
-                raise AttributeError("unreadable attribute")
-            return self.fget(obj)
+            return super().__get__(obj, objtype)
+            # if self.fget is None:
+            #     raise AttributeError("unreadable attribute")
+            # return self.fget(obj)
 
     def _setter_decor(self, fset):
         """Return an instance of decorator_property with fset and fdec set such

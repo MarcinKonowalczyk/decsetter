@@ -61,6 +61,58 @@ def function_foo(self):
 Note that, similarly to decorators with arguments, the function decorated with `@function_foo.decor` has to return the decorator. The internal property `_function_foo` is set by reference to the instance of the class encapsulated in the closure of `decor`.
 
 
+The decorator does not have to be a setter. In the following example the decorator of an integer property `incr` decorates the function to run `incr` number of times while incrementing its input.
+
+```python
+from decsetter import DecoratorProperty
+from functools import wraps
+
+class FunctionRepeater(metaclass=DecoratorProperty):
+    """Decorator of property 'incr' runs the wrapped function n times"""
+
+    def __init__(self, incr=1):
+        self._incr = incr
+
+    @decorator_property
+    def incr(self):
+        return self._incr
+
+    @incr.setter
+    def incr(self, value):
+        self._incr = value
+
+    @incr.decor
+    def incr(self):
+        def outer_wrapper(fun):
+            @wraps(fun)
+            def inner_wrapper(x, **kwargs):
+                return tuple(fun(x + i, **kwargs) for i in range(self._incr))
+
+            return inner_wrapper
+
+        return outer_wrapper
+```
+
+It can be used as follows:
+
+```python
+repeat = FunctionRepeater(3)
+
+@repeat.incr
+def square(x):
+    return x ** 2
+
+square(1) # -> (1, 4, 9)
+square(3) # -> (9, 16, 25)
+```
+
+The decorated `square` keeps a reference to instance of `FunctionRepeater` such that if the value of 
+
+```python
+repeat.incr = 5
+square(3) # -> (9, 16, 25, 36, 49)
+```
+
 ## Sharp corners
 
 This of course doesn't work since `cwf` is not initialised at the time of decoration.

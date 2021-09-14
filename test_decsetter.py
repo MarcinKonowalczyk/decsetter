@@ -1,4 +1,4 @@
-from decsetter import DecoratorProperty, decorator_property
+from decsetter import DecoratorProperty
 import pytest
 
 
@@ -105,7 +105,7 @@ class JustDecor(Common):
         return Common.sideeffect_decorator(self)
 
 
-##### Tests ######################################
+##### Basic tests ################################
 
 
 @pytest.mark.parametrize("cls", (Setter, SetterKwargFalse))
@@ -177,3 +177,75 @@ def test_sideeffect(cls):
         ...
 
     assert o.sideeffect == True
+
+
+##################################################
+
+
+class NoGetter(metaclass=DecoratorProperty):
+    def setx(self, value):
+        self._x = value
+
+    x = property(None, setx)
+
+    def indirect_getx(self):
+        return self._x
+
+
+def test_no_getter():
+    o = NoGetter()
+
+    o.x = 1
+    assert o.indirect_getx() == 1
+
+    o.x = 2
+    assert o.indirect_getx() == 2
+
+    with pytest.raises(AttributeError):
+        print(o.x)
+
+
+##################################################
+
+from functools import wraps
+
+
+class FunctionRepeater(metaclass=DecoratorProperty):
+    """Decorator of property 'incr' runs the wrapped function n times"""
+
+    def __init__(self, incr=1):
+        self._incr = incr
+
+    @decorator_property
+    def incr(self):
+        return self._incr
+
+    @incr.setter
+    def incr(self, value):
+        self._incr = value
+
+    @incr.decor
+    def incr(self):
+        def outer_wrapper(fun):
+            @wraps(fun)
+            def inner_wrapper(x, **kwargs):
+                return tuple(fun(x + i, **kwargs) for i in range(self._incr))
+
+            return inner_wrapper
+
+        return outer_wrapper
+
+
+def test_different_decor():
+    repeat = FunctionRepeater(3)
+
+    @repeat.incr
+    def square(x):
+        return x ** 2
+
+    assert square(1) == (1, 4, 9)
+    assert square(3) == (9, 16, 25)
+
+    repeat.incr = 5
+
+    assert square(3) == (9, 16, 25, 36, 49)
